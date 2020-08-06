@@ -79,6 +79,7 @@ void createDeployment(const std::string project_name, std::string launch_config_
 	//创建部署
 	grpc::Status status = d_stub.CreateDeployment(&context, cd_req, &op);
 	while (!op.done()) {
+
 		std::cout << op.has_response();
 		std::this_thread::sleep_for(std::chrono::milliseconds(2000));
 	}
@@ -86,7 +87,7 @@ void createDeployment(const std::string project_name, std::string launch_config_
 	std::cout << "12344556";
 	
 }
-
+/*
 int main()
 {
 	const std::string project_name = "unreal_gdk_starter_project";
@@ -100,3 +101,4 @@ int main()
 	createDeployment(project_name, launch_path, d_stub);
 
 }
+*/

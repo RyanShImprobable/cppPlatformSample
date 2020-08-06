@@ -72,6 +72,9 @@
     <ClCompile Include="improbable\spatialos\snapshot\v1alpha1\snapshot.pb.cc">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AsyncSample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="github.com\improbable\protoc-gen-gocli\cli.pb.h">
@@ -128,8 +131,5 @@
     <ClInclude Include="improbable\spatialos\snapshot\v1alpha1\snapshot.pb.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
 </Project>

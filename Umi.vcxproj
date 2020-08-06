@@ -171,6 +171,7 @@
     <ClCompile Include="improbable\spatialos\serviceaccount\v1alpha1\serviceaccount.pb.cc" />
     <ClCompile Include="improbable\spatialos\snapshot\v1alpha1\snapshot.grpc.pb.cc" />
     <ClCompile Include="improbable\spatialos\snapshot\v1alpha1\snapshot.pb.cc" />
+    <ClCompile Include="AsyncSample.cpp" />
     <ClCompile Include="Umi.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -192,9 +193,6 @@
     <ClInclude Include="improbable\spatialos\serviceaccount\v1alpha1\serviceaccount.pb.h" />
     <ClInclude Include="improbable\spatialos\snapshot\v1alpha1\snapshot.grpc.pb.h" />
     <ClInclude Include="improbable\spatialos\snapshot\v1alpha1\snapshot.pb.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
