@@ -21,6 +21,7 @@
 #include <string>
 #include <chrono>
 #include <thread>
+#include <future>
 
 class CreateDeploymentClient {
     public:
@@ -36,7 +37,7 @@ class CreateDeploymentClient {
       }
 
       // Assembles the client's payload and sends it to the server.
-      void SayHello(const std::string& project_name, const std::string& launch_config_path) {
+      void CreateDeployment(const std::string& project_name, const std::string& launch_config_path) {
           // 准备请求参数
           auto cd_req = improbable::spatialos::deployment::v1alpha1::CreateDeploymentRequest();
           std::string content = readFileToString(launch_config_path);
@@ -61,11 +62,16 @@ class CreateDeploymentClient {
           // was successful. Tag the request with the memory address of the call object.
           call->response_reader->Finish(&call->reply, &call->status, (void*)call);
       }
+
+      struct AsyncResult {
+          std::string Message;
+      };
     // Loop while listening for completed responses.
     // Prints out the response from the server.
-    void AsyncCompleteRpc() {
+     AsyncResult AsyncCompleteRpc() {
         void* got_tag;
         bool ok = false;
+        AsyncResult result;
         // Block until the next result is available in the completion queue "cq".
         while (cq_.Next(&got_tag, &ok)) {
             // The tag in this example is the memory location of the call object
@@ -73,17 +79,26 @@ class CreateDeploymentClient {
             // Verify that the request was completed successfully. Note that "ok"
             // corresponds solely to the request for updates introduced by Finish().
             GPR_ASSERT(ok);
-            if (call->status.ok())
-                std::cout << "Deployment received: " << call->reply.response().value() << std::endl;
-            else
+           
+            if (call->status.ok()) {
+                result.Message = call->reply.name();
+                std::cout << "Deployment received: " << call->reply.name() << std::endl;
+            }
+            else {
+                result.Message = call->status.error_message();
                 std::cout << "RPC failed" << std::endl;
+            }                         
             // Once we're complete, deallocate the call object.
             delete call;
+            return result;
+            
         }
+
+        return result;
     }
 
 
-
+  
     // struct for keeping state and data information
     struct AsyncClientCall {
         // Container for the data we expect from the server.
@@ -112,13 +127,14 @@ int main(int argc, char** argv) {
     // (use of InsecureChannelCredentials()).
     CreateDeploymentClient greeter(grpc::CreateChannel(
         "localhost:9876", grpc::InsecureChannelCredentials()));
-    // Spawn reader thread that loops indefinitely
-    std::thread thread_ = std::thread(&CreateDeploymentClient::AsyncCompleteRpc, &greeter);
 
     std::string launch_path = "C:\\UE\\423UEGDK010\\UnrealEngine\\Samples\\ClientTravelProject\\spatial\\default_launch.json";
     const std::string project_name = "your_project_name_here";
-    greeter.SayHello(project_name, launch_path);
+    greeter.CreateDeployment(project_name, launch_path);
     std::cout << "Press control-c to quit" << std::endl << std::endl;
-    thread_.join();  //blocks forever
+    
+    auto future = std::async(&CreateDeploymentClient::AsyncCompleteRpc, &greeter);
+    CreateDeploymentClient::AsyncResult simple = future.get();
+    std::cout << "Return value is " << simple.Message << std::endl;
     return 0;
 }
