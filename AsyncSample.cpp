@@ -135,6 +135,6 @@ int main(int argc, char** argv) {
     
     auto future = std::async(&CreateDeploymentClient::AsyncCompleteRpc, &greeter);
     CreateDeploymentClient::AsyncResult simple = future.get();
-    std::cout << "Return value is " << simple.Message << std::endl;
+    std::cout << "DeploymentId is " << simple.Message.substr(simple.Message.find("/")+1) << std::endl;
     return 0;
 }
